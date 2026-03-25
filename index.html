@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hello Beautiful</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose: #f5a800;
+      --blush: #ffe480;
+      --cream: #fffdf0;
+      --gold: #e08c00;
+      --deep: #3b2800;
+      --soft: #a07010;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 60% 20%, #fff3b0 0%, #ffe066 40%, #ffd000 100%);
+      font-family: 'Cormorant Garamond', serif;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Soft grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── SCREENS ── */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      z-index: 1;
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── SCREEN 1 – Hello Beautiful ── */
+    #screen1 .tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-style: italic;
+      color: var(--rose);
+      text-shadow: 2px 4px 30px rgba(224,140,0,0.3);
+      letter-spacing: 0.02em;
+      animation: fadeSlideUp 1.2s cubic-bezier(.22,1,.36,1) both;
+      text-align: center;
+      line-height: 1.15;
+      padding: 0 1rem;
+    }
+    #screen1 .sub {
+      margin-top: 1.2rem;
+      font-size: 1.3rem;
+      color: var(--soft);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      animation: fadeSlideUp 1.4s 0.2s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    /* ── SCREEN 2 – Hi button ── */
+    #screen2 .prompt {
+      font-size: 1.5rem;
+      color: var(--soft);
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.05em;
+      animation: fadeSlideUp 0.9s both;
+    }
+    .btn {
+      display: inline-block;
+      padding: 1rem 3.2rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-style: italic;
+      letter-spacing: 0.04em;
+      transition: transform 0.18s, box-shadow 0.18s;
+      position: relative;
+    }
+    .btn-hi {
+      background: linear-gradient(135deg, #e08c00, #c47000);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(224,140,0,0.5);
+      animation: pulse 2.4s 0.5s ease-in-out infinite;
+    }
+    .btn-hi:hover { transform: scale(1.07); box-shadow: 0 12px 40px rgba(224,140,0,0.7); }
+
+    .btn-next {
+      background: linear-gradient(135deg, #d4a853, #b8843d);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(212,168,83,0.45);
+      margin-top: 2rem;
+    }
+    .btn-next:hover { transform: scale(1.07); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(224,140,0,0.45); }
+      50% { box-shadow: 0 8px 48px rgba(224,140,0,0.75), 0 0 0 10px rgba(224,140,0,0.15); }
+    }
+
+    /* ── SCREEN 3 – Note + Hearts ── */
+    #screen3 .note-wrap {
+      position: relative;
+      text-align: center;
+      padding: 3rem 2.5rem;
+      max-width: 600px;
+    }
+    #screen3 .note-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 4vw, 2.6rem);
+      font-style: italic;
+      color: #e08c00;
+      line-height: 1.5;
+      position: relative;
+      z-index: 2;
+      animation: noteReveal 1.2s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes noteReveal {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ── FALLING FLOWERS ── */
+    #flower-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .flower {
+      position: absolute;
+      top: -80px;
+      font-size: 2rem;
+      animation: fallDown linear forwards;
+      will-change: transform;
+    }
+    @keyframes fallDown {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(0.6); opacity: 0; }
+    }
+
+    /* ── BLOOMING HEARTS ── */
+    #heart-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .heart-particle {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: heartBloom ease-out forwards;
+      will-change: transform, opacity;
+    }
+    @keyframes heartBloom {
+      0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+      30%  { opacity: 1; }
+      100% { transform: translate(-50%, calc(-50% - 220px)) scale(1.3) rotate(var(--r)); opacity: 0; }
+    }
+
+    /* ── SHARED ANIMS ── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DECORATIVE PETALS BG ── */
+    .bg-petal {
+      position: fixed;
+      font-size: 1.2rem;
+      opacity: 0.12;
+      animation: driftPetal linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes driftPetal {
+      0%   { transform: translateY(-20px) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(180deg); }
+    }
+
+    /* ── TRANSITION OVERLAY ── */
+    .transition-overlay {
+      position: fixed;
+      inset: 0;
+      background: #fffdf0;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 50;
+      transition: opacity 0.4s;
+    }
+    .transition-overlay.flash {
+      opacity: 1;
+    }
+
+    /* Next button container */
+    #screen2 .btn-next-wrap {
+      margin-top: 1.5rem;
+      animation: fadeSlideUp 0.7s both;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="transition-overlay" id="overlay"></div>
+  <div id="flower-layer"></div>
+  <div id="heart-layer"></div>
+
+  <!-- Screen 1 -->
+  <section class="screen active" id="screen1">
+    <div class="tagline">Hello Beautiful</div>
+    <div class="sub">✦ a little something for you ✦</div>
+  </section>
+
+  <!-- Screen 2 -->
+  <section class="screen" id="screen2">
+    <div class="prompt">psst… tap below 🌸</div>
+    <button class="btn btn-hi" id="hiBtn">say hi 💐</button>
+    <div class="btn-next-wrap" id="nextWrap" style="display:none;">
+      <button class="btn btn-next" id="nextBtn">next ✨</button>
+    </div>
+  </section>
+
+  <!-- Screen 3 -->
+  <section class="screen" id="screen3">
+    <div class="note-wrap">
+      <div class="note-text" id="noteText">
+        u are way more precious for me<br/>than u think 🌻
+      </div>
+      <button class="btn btn-hi" style="margin-top:2.5rem;font-size:1.2rem;" id="replayBtn">replay 🌸</button>
+    </div>
+  </section>
+
+  <script>
+    /* ─── Helpers ─── */
+    const $ = id => document.getElementById(id);
+    const flowerEmojis = ['🌸','🌷','🌺','🌹','🌼','💐','🌻','🪷'];
+    const heartEmojis  = ['🌻','🌻','🌻','🌻','🌻','🌼','💛','✨'];
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      $(id).classList.add('active');
+    }
+
+    /* Ambient bg petals */
+    for (let i = 0; i < 14; i++) {
+      const p = document.createElement('div');
+      p.className = 'bg-petal';
+      p.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.animationDuration = (9 + Math.random() * 10) + 's';
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      p.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+      document.body.appendChild(p);
+    }
+
+    /* ─── Screen 1 → 2 auto transition ─── */
+    setTimeout(() => {
+      const ov = $('overlay');
+      ov.classList.add('flash');
+      setTimeout(() => {
+        showScreen('screen2');
+        ov.classList.remove('flash');
+      }, 400);
+    }, 2800);
+
+    /* ─── Falling Flowers ─── */
+    function launchFlowers() {
+      const layer = $('flower-layer');
+      const count = 60;
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const f = document.createElement('div');
+          f.className = 'flower';
+          f.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+          f.style.left = (Math.random() * 100) + 'vw';
+          f.style.fontSize = (1.2 + Math.random() * 2.2) + 'rem';
+          const dur = 2.5 + Math.random() * 2.5;
+          f.style.animationDuration = dur + 's';
+          f.style.animationDelay = '0s';
+          layer.appendChild(f);
+          setTimeout(() => f.remove(), (dur + 0.5) * 1000);
+        }, i * 70);
+      }
+    }
+
+    /* ─── Hi button ─── */
+    let flowersLaunched = false;
+    $('hiBtn').addEventListener('click', () => {
+      if (flowersLaunched) return;
+      flowersLaunched = true;
+      $('hiBtn').disabled = true;
+      $('hiBtn').style.opacity = '0.6';
+      launchFlowers();
+      // Show next button after flowers start
+      setTimeout(() => {
+        $('nextWrap').style.display = 'block';
+      }, 3200);
+    });
+
+    /* ─── Blooming Hearts ─── */
+    function bloomHearts() {
+      const layer = $('heart-layer');
+      const note  = $('noteText');
+      const rect  = note.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top  + rect.height / 2;
+
+      function spawnBatch() {
+        for (let i = 0; i < 6; i++) {
+          const h = document.createElement('div');
+          h.className = 'heart-particle';
+          h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+          const ox = (Math.random() - 0.5) * rect.width * 1.4;
+          const oy = (Math.random() - 0.5) * rect.height;
+          h.style.left = (cx + ox) + 'px';
+          h.style.top  = (cy + oy) + 'px';
+          h.style.setProperty('--r', (Math.random() * 60 - 30) + 'deg');
+          const dur = 1.8 + Math.random() * 1.4;
+          h.style.animationDuration = dur + 's';
+          h.style.animationDelay = (Math.random() * 0.4) + 's';
+          h.style.fontSize = (1.2 + Math.random() * 1.8) + 'rem';
+          layer.appendChild(h);
+          setTimeout(() => h.remove(), (dur + 0.8) * 1000);
+        }
+      }
+
+      // Continuous blooming loop
+      let count = 0;
+      const interval = setInterval(() => {
+        spawnBatch();
+        count++;
+        if (count > 20) clearInterval(interval);
+      }, 400);
+    }
+
+    /* ─── Next button ─── */
+    $('nextBtn').addEventListener('click', () => {
+      const ov = $('overlay');
+      ov.classList.add('flash');
+      setTimeout(() => {
+        showScreen('screen3');
+        ov.classList.remove('flash');
+        setTimeout(bloomHearts, 800);
+      }, 400);
+    });
+
+    /* ─── Replay ─── */
+    $('replayBtn').addEventListener('click', () => {
+      $('heart-layer').innerHTML = '';
+      $('flower-layer').innerHTML = '';
+      flowersLaunched = false;
+      $('hiBtn').disabled = false;
+      $('hiBtn').style.opacity = '1';
+      $('nextWrap').style.display = 'none';
+      const ov = $('overlay');
+      ov.classList.add('flash');
+      setTimeout(() => {
+        showScreen('screen1');
+        ov.classList.remove('flash');
+        setTimeout(() => {
+          ov.classList.add('flash');
+          setTimeout(() => {
+            showScreen('screen2');
+            ov.classList.remove('flash');
+          }, 400);
+        }, 2800);
+      }, 400);
+    });
+  </script>
+</body>
+</html>
